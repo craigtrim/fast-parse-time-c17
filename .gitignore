@@ -1,0 +1,10 @@
+/build*/
+/.venv/
+__pycache__/
+/.pytest_cache/
+/test-results/
+/vendor/*.tar.gz
+*.pyc
+/*.log
+/dist/
+/install-test/

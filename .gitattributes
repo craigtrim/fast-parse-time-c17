@@ -1,0 +1,2 @@
+# Preserve upstream release bytes, including line-ending regression fixtures.
+vendor/pcre2-10.45/** -text
