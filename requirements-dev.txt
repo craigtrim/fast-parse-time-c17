@@ -1,0 +1,5 @@
+# Development verification only. No Python dependency in the C build/runtime.
+pytest==9.1.1
+word2number==1.1
+dateparser==1.4.3
+poetry-core>=2.0,<3.0
