@@ -16,6 +16,13 @@ consumer both passed. DLL/executable imports contain only Windows system
 libraries. CLI verification covers UTF-16 command-line conversion to UTF-8,
 raw stdin whitespace preservation, batch lines, JSON output, and error exits.
 
+The Linux x86-64 build was also verified under Ubuntu 20.04.6 in WSL, with GCC
+9.4.0 and CMake 4.4.2. `build.sh --package` passed both native tests and produced
+the versioned ELF executable and SDK archive. On that build, the 31,458 frozen
+observations and 120,000 arithmetic comparisons had zero mismatches. CLI checks
+passed both before and after archive extraction, and an independent CMake
+consumer built and ran against the extracted SDK. See `LINUX.md` for commands.
+
 The complete current upstream suite produces identical per-test outcomes with
 the source implementation and native adapter:
 
@@ -95,12 +102,14 @@ To test a different executable, set `FPT_CLI`.
 4. Run the full verification script and resolve every new parity difference.
 5. Refresh the two observation files and context metadata under `tests/data`
    from the successful baseline in `test-results`. Update documentation evidence.
-6. Build the versioned executable and delivery archive with `build.ps1 -Package`.
+6. Build the versioned executable and delivery archive with `build.ps1 -Package`
+   on Windows or `./build.sh --package` on Linux.
 
 The generator does not replace algorithm review: some explicit extraction
 patterns and all procedural behavior are handwritten C translations.
 
 CI configuration builds Windows GCC and Linux GCC/Clang, replays the frozen
 corpus, and includes Linux AddressSanitizer/UndefinedBehaviorSanitizer checks.
-Those hosted jobs have not been executed in this local Windows delivery session;
-the local MinGW distribution does not ship sanitizer runtimes.
+The Linux GCC and Clang jobs have completed successfully, including sanitizer
+checks. The workflow also verifies packaged executables and uploads versioned
+Linux SDK archives for download from the run's artifacts.

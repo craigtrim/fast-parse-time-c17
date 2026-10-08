@@ -9,6 +9,8 @@ jobs:
         compiler: [gcc, clang]
     env:
       CC: ${{ matrix.compiler }}
+      FPT_LIBRARY: ${{ github.workspace }}/build-linux/libfast_parse_time.so
+      FPT_CLI: ${{ github.workspace }}/build-linux/fpt
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -16,9 +18,10 @@ jobs:
           python-version: '3.11'
       - name: Build and native tests
         run: |
-          cmake -S . -B build -G Ninja -DCMAKE_BUILD_TYPE=Release
-          cmake --build build --parallel 2
-          ctest --test-dir build --output-on-failure
+          ./build.sh --package --jobs 2
+          version=$(./build-linux/fpt --version)
+          version=${version%% *}
+          echo "FPT_LINUX_PACKAGE=fast-parse-time-c17-$version-linux-$(uname -m)" >> "$GITHUB_ENV"
       - name: Frozen corpus, arithmetic, CLI
         run: |
           python tests/differential.py --corpus tests/data/observations.jsonl --calendar-corpus tests/data/calendar-observations.jsonl
@@ -26,10 +29,16 @@ jobs:
           python tests/cli_checks.py
       - name: Installed CMake consumer
         run: |
-          cmake --install build --prefix "$PWD/install-test"
-          cmake -S examples -B build-consumer -G Ninja -DCMAKE_PREFIX_PATH="$PWD/install-test"
+          cmake -S "dist/$FPT_LINUX_PACKAGE/examples" -B build-consumer -G Ninja -DCMAKE_PREFIX_PATH="$PWD/dist/$FPT_LINUX_PACKAGE"
           cmake --build build-consumer
           ./build-consumer/fpt_example
+      - name: Verify packaged executable
+        run: |
+          mkdir -p build-package-check
+          tar -xzf "dist/$FPT_LINUX_PACKAGE.tar.gz" -C build-package-check
+          version=$(./build-linux/fpt --version)
+          version=${version%% *}
+          FPT_CLI="$PWD/build-package-check/$FPT_LINUX_PACKAGE/bin/fpt-$version" python tests/cli_checks.py
       - name: Address and undefined-behavior sanitizers
         env:
           ASAN_OPTIONS: detect_leaks=1
@@ -39,6 +48,12 @@ jobs:
           cmake --build build-sanitize --parallel 2
           ctest --test-dir build-sanitize --output-on-failure
           FPT_CLI="$PWD/build-sanitize/fpt" python tests/cli_checks.py
+      - name: Upload Linux package
+        uses: actions/upload-artifact@v4
+        with:
+          name: fast-parse-time-linux-${{ matrix.compiler }}
+          path: dist/*-linux-*.tar.gz
+          if-no-files-found: error
   windows:
     runs-on: windows-latest
     defaults:

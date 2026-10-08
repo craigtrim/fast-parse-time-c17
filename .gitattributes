@@ -1,2 +1,5 @@
+# Shell scripts must remain runnable after checkout on Windows or Linux.
+*.sh text eol=lf
+
 # Preserve upstream release bytes, including line-ending regression fixtures.
 vendor/pcre2-10.45/** -text
