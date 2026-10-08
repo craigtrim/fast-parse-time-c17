@@ -1,0 +1,6 @@
+cmake_minimum_required(VERSION 3.20)
+project(fpt_consumer C)
+set(CMAKE_C_STANDARD 17)
+find_package(fast_parse_time CONFIG REQUIRED)
+add_executable(fpt_example parse.c)
+target_link_libraries(fpt_example PRIVATE fast_parse_time::fast_parse_time)

@@ -1,0 +1,3 @@
+@PACKAGE_INIT@
+include("${CMAKE_CURRENT_LIST_DIR}/fast_parse_timeTargets.cmake")
+check_required_components(fast_parse_time)
