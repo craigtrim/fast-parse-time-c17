@@ -17,17 +17,27 @@ was verified with GCC 16.1, MinGW-w64/UCRT, on Windows x64.
 
 ```powershell
 cd D:\git\fpt\fast-parse-time-c17
-.\build.ps1 -Package
+.\build.ps1
 ```
 
-Outputs:
+The script builds Release by default, runs the native tests, and writes a
+versioned executable. Use `-Package` to also create the versioned SDK directory
+and ZIP, or `-Configuration Debug` for a debug build (filenames gain `-debug`).
+The version comes from `FPT_VERSION` in `include/fast_parse_time.h` and is used
+for the filenames, `--version`, CMake package version, and Windows File
+Properties. No Python environment is required.
+
+Current outputs (`-Package` includes the ZIP):
 
 ```text
-D:\git\fpt\fast-parse-time-c17\build\fpt.exe
+D:\git\fpt\fast-parse-time-c17\build\fpt-1.5.0-c17.1.exe
 D:\git\fpt\fast-parse-time-c17\build\libfast_parse_time.dll
 D:\git\fpt\fast-parse-time-c17\build\libfast_parse_time.a
-D:\git\fpt\fast-parse-time-c17\dist\fast-parse-time-c17-windows-x64.zip
+D:\git\fpt\fast-parse-time-c17\dist\fast-parse-time-c17-1.5.0-c17.1-windows-x64.zip
 ```
+
+`build\fpt.exe` is also available for scripts and tests. Packaged executables
+are under `dist\fast-parse-time-c17-1.5.0-c17.1\bin`.
 
 The ZIP includes the standalone executable, DLL, static libraries, public
 header, CMake package, documentation, examples, and licenses. `fpt.exe` and the

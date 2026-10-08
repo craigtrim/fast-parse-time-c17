@@ -90,11 +90,12 @@ To test a different executable, set `FPT_CLI`.
 1. Review changed source algorithms and public exports, and update handwritten C.
 2. Run `python tools/generate_data.py PATH_TO_SOURCE` with Python 3.11 to rebuild
    effective phrase lookup, regex patterns, Unicode tables, and the source manifest.
-3. Update the CMake/package version when the source version changes.
+3. Check `FPT_VERSION` in the public header. CMake, Windows version metadata,
+   executable filenames, and package names derive their versions from it.
 4. Run the full verification script and resolve every new parity difference.
 5. Refresh the two observation files and context metadata under `tests/data`
    from the successful baseline in `test-results`. Update documentation evidence.
-6. Build the delivery archive with `build.ps1 -Package`.
+6. Build the versioned executable and delivery archive with `build.ps1 -Package`.
 
 The generator does not replace algorithm review: some explicit extraction
 patterns and all procedural behavior are handwritten C translations.
